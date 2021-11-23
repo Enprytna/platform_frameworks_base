@@ -50,6 +50,7 @@
     <string name="global_action_reboot_recovery">Recovery</string>
     <string name="global_action_reboot_bootloader">Bootloader</string>
     <string name="global_action_settings">Settings</string>
+    <string name="global_action_reboot_more">Advanced</string>
 
     <!-- Gaming Mode -->
     <string name="gaming_mode_tile_title">Gaming Macro</string>
