@@ -63,7 +63,6 @@ import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -73,7 +72,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.media.AudioAttributes;
@@ -246,7 +244,6 @@ import com.android.systemui.statusbar.policy.OnHeadsUpChangedListener;
 import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
-import com.android.systemui.util.settings.SystemSettings;
 import com.android.systemui.volume.VolumeComponent;
 import com.android.systemui.wmshell.BubblesManager;
 import com.android.wm.shell.bubbles.Bubbles;
@@ -716,8 +713,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     private ActivityIntentHelper mActivityIntentHelper;
     private NotificationStackScrollLayoutController mStackScrollerController;
 
-    private final SystemSettings mSystemSettings;
-
     /**
      * Public constructor for StatusBar.
      *
@@ -815,8 +810,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             FeatureFlags featureFlags,
             KeyguardUnlockAnimationController keyguardUnlockAnimationController,
             UnlockedScreenOffAnimationController unlockedScreenOffAnimationController,
-            Optional<StartingSurface> startingSurfaceOptional,
-            SystemSettings systemSettings) {
+            Optional<StartingSurface> startingSurfaceOptional) {
         super(context);
         mNotificationsController = notificationsController;
         mLightBarController = lightBarController;
@@ -905,7 +899,6 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         mLockscreenShadeTransitionController = lockscreenShadeTransitionController;
         mStartingSurfaceOptional = startingSurfaceOptional;
-        mSystemSettings = systemSettings;
         lockscreenShadeTransitionController.setStatusbar(this);
 
         mExpansionChangedListeners = new ArrayList<>();
@@ -991,9 +984,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         } else if (DEBUG) {
             Log.v(TAG, "start(): no wallpaper service ");
         }
-
-        mSbSettingsObserver.update();
-        mSbSettingsObserver.observe();
 
         // Set up the initial notification state. This needs to happen before CommandQueue.disable()
         setUpPresenter();
@@ -4584,37 +4574,6 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     public boolean isDeviceInteractive() {
         return mDeviceInteractive;
-    }
-
-    private final SbSettingsObserver mSbSettingsObserver = new SbSettingsObserver();
-
-    private class SbSettingsObserver extends ContentObserver {
-        SbSettingsObserver() {
-            super(mHandler);
-        }
-
-        void observe() {
-            mSystemSettings.registerContentObserver(Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN, this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            if (uri.getLastPathSegment().equals(Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN)) {
-                setLockscreenDoubleTapToSleep();
-            }
-        }
-
-        void update() {
-            setLockscreenDoubleTapToSleep();
-        }
-
-        private void setLockscreenDoubleTapToSleep() {
-            if (mNotificationPanelViewController != null) {
-                mNotificationPanelViewController.setLockscreenDoubleTapToSleep(
-                    mSystemSettings.getInt(Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN, 0) == 1
-                );
-            }
-        }
     }
 
     private final BroadcastReceiver mBannerActionBroadcastReceiver = new BroadcastReceiver() {

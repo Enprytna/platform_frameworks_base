@@ -91,6 +91,5 @@ public class SystemSettings {
         Settings.System.GAMING_MODE_BRIGHTNESS_ENABLED,
         Settings.System.GAMING_MODE_MEDIA_ENABLED,
         Settings.System.GAMING_MODE_MEDIA,
-        Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN,
     };
 }
