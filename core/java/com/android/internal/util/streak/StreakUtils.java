@@ -65,7 +65,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class Utils {
+public class StreakUtils {
     private static OverlayManager mOverlayService;
 
     // Check to see if device is WiFi only
