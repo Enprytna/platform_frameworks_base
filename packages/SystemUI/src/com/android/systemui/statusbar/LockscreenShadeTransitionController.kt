@@ -16,7 +16,7 @@ import android.view.ViewConfiguration
 import androidx.annotation.VisibleForTesting
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent
-import com.android.internal.util.streak.Utils
+import com.android.internal.util.streak.StreakUtils
 import com.android.systemui.ExpandHelper
 import com.android.systemui.Gefingerpoken
 import com.android.systemui.R
@@ -602,7 +602,7 @@ class DragDownHelper(
     init {
         updateResources(context)
         goToSleep = Runnable {
-            Utils.switchScreenOff(context)
+            StreakUtils.switchScreenOff(context)
         }
     }
 
